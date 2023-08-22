@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import "package:songify/models/search.dart";
+import 'package:http/http.dart' as http;
 
 class Searchpage extends StatefulWidget {
   @override
@@ -7,8 +12,28 @@ class Searchpage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<Searchpage> {
-  String _search = '';
+  String _searchi = '';
+  Search? search;
   final TextEditingController _searchController = TextEditingController();
+
+  Future getTrending(String searchitem) async {
+    //create your own api
+    if (searchitem != "") {
+      final response = await http.get(Uri.parse(
+          'https://www.jiosaavn.com/api.php?__call=autocomplete.get&query=$searchitem&_format=json&_marker=0&ctx=wap6dot0'));
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        setState(() {
+          search = Search.fromJson(data);
+        });
+      } else {
+        setState(() {
+          search = Search.fromJson(data) as Search;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -60,11 +85,12 @@ class _SearchPageState extends State<Searchpage> {
           ),
         ),
         Container(
-          margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+          margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: const EdgeInsets.symmetric(horizontal: 7.0),
           // Use a Material design search bar
           child: TextField(
             controller: _searchController,
+            onChanged: (value) => {getTrending(value)},
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
@@ -72,29 +98,30 @@ class _SearchPageState extends State<Searchpage> {
               focusColor: Colors.amber,
 
               hintStyle:
-                  GoogleFonts.poppins(textStyle: TextStyle(fontSize: 18)),
+                  GoogleFonts.poppins(textStyle: const TextStyle(fontSize: 18)),
               // Add a clear button to the search bar
               suffixIcon: IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.clear,
-                  color: const Color.fromARGB(255, 46, 46, 46),
+                  color: Color.fromARGB(255, 46, 46, 46),
                 ),
                 onPressed: () => _searchController.clear(),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide:
-                    BorderSide(color: const Color.fromARGB(255, 53, 52, 52)),
+                    const BorderSide(color: Color.fromARGB(255, 53, 52, 52)),
                 borderRadius: BorderRadius.circular(10),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide:
-                    BorderSide(color: const Color.fromARGB(255, 58, 58, 58)),
+                    const BorderSide(color: Color.fromARGB(255, 58, 58, 58)),
                 borderRadius: BorderRadius.circular(10),
               ),
+
               prefixIcon: IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.search,
-                  color: const Color.fromARGB(255, 46, 46, 46),
+                  color: Color.fromARGB(255, 46, 46, 46),
                   size: 35,
                 ),
                 onPressed: () {
@@ -106,7 +133,152 @@ class _SearchPageState extends State<Searchpage> {
               ),
             ),
           ),
-        )
+        ),
+        Container(
+          alignment: Alignment.topLeft,
+          padding: const EdgeInsets.fromLTRB(15, 20, 0, 0),
+          child: Text(
+            "Songs",
+            style: GoogleFonts.poppins(
+                textStyle: const TextStyle(fontSize: 25, color: Colors.white)),
+          ),
+        ),
+        Expanded(
+            child: (search?.songs == null)
+                ? const Text(
+                    "Not",
+                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                  )
+                : ListView.builder(
+                    itemCount: search?.songs!.data?.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: const Color.fromARGB(255, 66, 66, 66)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    search!.songs!.data![index].image
+                                        .toString(),
+                                    height: 90,
+                                    scale: 0.75,
+                                  ),
+                                ),
+                                Container(
+                                  width: 230,
+                                  child: Text(
+                                      search!.songs!.data![index].title
+                                          .toString(),
+                                      maxLines: 2,
+                                      style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                              fontSize: 20,
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.white))),
+                                )
+                              ],
+                            ),
+                            Container(
+                              width: 70,
+                              child: ElevatedButton(
+                                onPressed: () => print("sdd"),
+                                style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(10),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 48, 49, 49),
+                                  foregroundColor:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                child: const Icon(
+                                  Icons.play_arrow_rounded,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    })),
+        Container(
+          alignment: Alignment.topLeft,
+          padding: const EdgeInsets.fromLTRB(15, 20, 0, 0),
+          child: Text(
+            "Playlists",
+            style: GoogleFonts.poppins(
+                textStyle: const TextStyle(fontSize: 25, color: Colors.white)),
+          ),
+        ),
+        Expanded(
+            child: (search?.playlists == null)
+                ? const Text(
+                    "Not",
+                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                  )
+                : ListView.builder(
+                    itemCount: search?.playlists!.data?.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: const Color.fromARGB(255, 66, 66, 66)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.network(
+                                  search!.playlists!.data![index].image
+                                      .toString(),
+                                  height: 90,
+                                  scale: 0.75,
+                                ),
+                                Container(
+                                  width: 230,
+                                  child: Text(
+                                      search!.playlists!.data![index].title
+                                          .toString(),
+                                      maxLines: 2,
+                                      style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                              fontSize: 20,
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Colors.white))),
+                                )
+                              ],
+                            ),
+                            Container(
+                              width: 70,
+                              child: ElevatedButton(
+                                onPressed: () => print("sdd"),
+                                style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(10),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 48, 49, 49),
+                                  foregroundColor:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                child: const Icon(
+                                  Icons.play_arrow_rounded,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }))
       ],
     );
   }
