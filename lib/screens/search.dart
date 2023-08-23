@@ -2,11 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:just_audio/just_audio.dart';
 
 import "package:songify/models/search.dart";
 import 'package:http/http.dart' as http;
+import 'package:songify/screens/player.dart';
 
 class Searchpage extends StatefulWidget {
+  Searchpage({Key? key, required this.audio});
+  final AudioPlayer audio;
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -52,7 +56,7 @@ class _SearchPageState extends State<Searchpage> {
               Row(
                 children: [
                   ElevatedButton(
-                    onPressed: () => print("sdd"),
+                    onPressed: () => {},
                     style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(10),
@@ -151,8 +155,10 @@ class _SearchPageState extends State<Searchpage> {
                   )
                 : ListView.builder(
                     itemCount: search?.songs!.data?.length,
+                    padding: EdgeInsets.zero,
                     itemBuilder: (context, index) {
                       return Container(
+                        padding: EdgeInsets.all(7),
                         margin: const EdgeInsets.all(7),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
@@ -167,16 +173,18 @@ class _SearchPageState extends State<Searchpage> {
                                   child: Image.network(
                                     search!.songs!.data![index].image
                                         .toString(),
-                                    height: 90,
-                                    scale: 0.75,
+                                    height: 40,
+                                    scale: 1,
                                   ),
                                 ),
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0)),
                                 Container(
                                   width: 230,
                                   child: Text(
                                       search!.songs!.data![index].title
                                           .toString(),
-                                      maxLines: 2,
+                                      maxLines: 1,
                                       style: GoogleFonts.poppins(
                                           textStyle: const TextStyle(
                                               fontSize: 20,
@@ -188,7 +196,24 @@ class _SearchPageState extends State<Searchpage> {
                             Container(
                               width: 70,
                               child: ElevatedButton(
-                                onPressed: () => print("sdd"),
+                                onPressed: () => {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Player(
+                                              audio: widget.audio,
+                                              fromWhere: "search",
+                                              id: "asdasd",
+                                              url: search!
+                                                  .songs!.data![index].url
+                                                  .toString(),
+                                              title: search!
+                                                  .songs!.data![index].title
+                                                  .toString(),
+                                              image: search!
+                                                  .songs!.data![index].image
+                                                  .toString())))
+                                },
                                 style: ElevatedButton.styleFrom(
                                   shape: const CircleBorder(),
                                   padding: const EdgeInsets.all(10),
@@ -224,9 +249,11 @@ class _SearchPageState extends State<Searchpage> {
                     style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                   )
                 : ListView.builder(
+                    padding: EdgeInsets.zero,
                     itemCount: search?.playlists!.data?.length,
                     itemBuilder: (context, index) {
                       return Container(
+                        padding: EdgeInsets.all(7),
                         margin: const EdgeInsets.all(7),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
@@ -239,15 +266,17 @@ class _SearchPageState extends State<Searchpage> {
                                 Image.network(
                                   search!.playlists!.data![index].image
                                       .toString(),
-                                  height: 90,
-                                  scale: 0.75,
+                                  height: 40,
+                                  scale: 1,
                                 ),
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(5, 0, 5, 0)),
                                 Container(
                                   width: 230,
                                   child: Text(
                                       search!.playlists!.data![index].title
                                           .toString(),
-                                      maxLines: 2,
+                                      maxLines: 1,
                                       style: GoogleFonts.poppins(
                                           textStyle: const TextStyle(
                                               fontSize: 20,

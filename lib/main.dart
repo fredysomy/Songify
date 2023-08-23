@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import 'package:songify/screens/home.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-
+import 'package:just_audio/just_audio.dart';
 import 'package:songify/screens/search.dart';
 
-void main() {
+Future<void> main() async {
   runApp(MyApp());
 }
 
@@ -27,7 +31,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-  final pages = [Home(), Searchpage(), Home()];
+  @override
+  void initState() {
+    super.initState();
+
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.black,
+          systemNavigationBarIconBrightness: Brightness.light,
+          systemNavigationBarDividerColor: Colors.black,
+        ),
+      );
+    }
+  }
+
+  final pages = [
+    Home(
+      audio: AudioPlayer(),
+    ),
+    Searchpage(audio: AudioPlayer()),
+    Home(
+      audio: AudioPlayer(),
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:songify/api/playlists.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -10,6 +11,8 @@ import 'package:songify/models/trending.dart';
 import 'package:songify/models/home_wrapper.dart';
 
 class Home extends StatefulWidget {
+  Home({Key? key, required this.audio});
+  final AudioPlayer audio;
   @override
   _HomeState createState() => _HomeState();
 }
