@@ -41,6 +41,8 @@ dependencies:
   google_nav_bar: ^5.0.6
   just_audio: ^0.9.34
   just_audio_background: ^0.0.1-beta.10
+  get: ^4.6.5
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

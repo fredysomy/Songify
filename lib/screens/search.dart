@@ -175,6 +175,11 @@ class _SearchPageState extends State<Searchpage> {
                                         .toString(),
                                     height: 40,
                                     scale: 1,
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      return const Text('😢');
+                                    },
                                   ),
                                 ),
                                 Padding(
