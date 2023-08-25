@@ -184,17 +184,36 @@ class _SearchPageState extends State<Searchpage> {
                                 ),
                                 Padding(
                                     padding: EdgeInsets.fromLTRB(5, 0, 5, 0)),
-                                Container(
-                                  width: 230,
-                                  child: Text(
-                                      search!.songs!.data![index].title
-                                          .toString(),
-                                      maxLines: 1,
-                                      style: GoogleFonts.poppins(
-                                          textStyle: const TextStyle(
-                                              fontSize: 20,
-                                              overflow: TextOverflow.ellipsis,
-                                              color: Colors.white))),
+                                Column(
+                                  children: [
+                                    Container(
+                                      width: 230,
+                                      child: Text(
+                                          search!.songs!.data![index].title
+                                              .toString(),
+                                          maxLines: 1,
+                                          style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                  fontSize: 20,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.white))),
+                                    ),
+                                    Container(
+                                      width: 230,
+                                      child: Text(
+                                          search!.songs!.data![index].moreInfo!
+                                              .singers
+                                              .toString(),
+                                          maxLines: 1,
+                                          style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                  fontSize: 10,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.white))),
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
@@ -208,7 +227,8 @@ class _SearchPageState extends State<Searchpage> {
                                           builder: (context) => Player(
                                               audio: widget.audio,
                                               fromWhere: "search",
-                                              id: "asdasd",
+                                              id: search!.songs!.data![index].id
+                                                  .toString(),
                                               url: search!
                                                   .songs!.data![index].url
                                                   .toString(),

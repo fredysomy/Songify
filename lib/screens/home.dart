@@ -114,7 +114,15 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Player(fromWhere: "asasas")));
+                            builder: (context) => Player(
+                                fromWhere: "asasas",
+                                id: Provider.of<AppStateStore>(context,
+                                        listen: false)
+                                    .audioPlayer
+                                    .sequenceState!
+                                    .currentSource!
+                                    .tag!
+                                    .id)));
                   },
                   child: Container(
                     width: double.infinity,
@@ -137,13 +145,18 @@ class _HomeState extends State<Home> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                              Provider.of<AppStateStore>(context, listen: false)
-                                  .audioPlayer
-                                  .sequenceState!
-                                  .currentSource!
-                                  .tag!
-                                  .artist
-                                  .toString()),
+                            Provider.of<AppStateStore>(context, listen: false)
+                                .audioPlayer
+                                .sequenceState!
+                                .currentSource!
+                                .tag!
+                                .artist
+                                .toString(),
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace? stackTrace) {
+                              return const Text('😢');
+                            },
+                          ),
                         ),
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0)),
@@ -210,8 +223,8 @@ class _HomeState extends State<Home> {
             child: Text(
               "Now Trending",
               style: GoogleFonts.poppins(
-                  textStyle:
-                      const TextStyle(fontSize: 25, color: Colors.white)),
+                  textStyle: const TextStyle(
+                      fontSize: 25, color: Color.fromARGB(255, 120, 230, 110))),
             ),
           ),
           ConstrainedBox(
@@ -234,8 +247,8 @@ class _HomeState extends State<Home> {
                                       borderRadius: BorderRadius.circular(10),
                                       color: const Color.fromARGB(
                                           255, 56, 55, 55)),
-                                  height: 200,
-                                  width: 170,
+                                  height: 220,
+                                  width: 190,
                                   margin:
                                       const EdgeInsets.fromLTRB(15, 5, 5, 0),
                                   child: Column(children: [
@@ -251,20 +264,132 @@ class _HomeState extends State<Home> {
                                     const Padding(
                                         padding:
                                             EdgeInsets.fromLTRB(0, 10, 0, 0)),
-                                    Container(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(7, 0, 7, 0),
-                                      child: Text(
-                                        snapshot.data!.trending
-                                            .newTrending![index].title
-                                            .toString(),
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.poppins(
-                                          textStyle:
-                                              const TextStyle(fontSize: 20),
-                                          color: Colors.white,
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 120,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              18, 0, 7, 0),
+                                          child: Text(
+                                            snapshot.data!.trending
+                                                .newTrending![index].title
+                                                .toString(),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              textStyle:
+                                                  const TextStyle(fontSize: 15),
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            print("sd");
+                                          },
+                                          child: Icon(Icons.play_arrow),
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const CircleBorder(),
+                                            padding: const EdgeInsets.all(8),
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 48, 49, 49),
+                                            foregroundColor: Color.fromARGB(
+                                                255, 87, 248, 122),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ]),
+                                )
+                              ],
+                            );
+                          });
+                    } else {
+                      return const Text("loading");
+                    }
+                  })),
+          Container(
+            alignment: Alignment.topLeft,
+            padding: const EdgeInsets.fromLTRB(15, 20, 0, 10),
+            child: Text(
+              "Top Charts",
+              style: GoogleFonts.poppins(
+                  textStyle: const TextStyle(
+                      fontSize: 25, color: Color.fromARGB(255, 120, 230, 110))),
+            ),
+          ),
+          ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxWidth: double.infinity, maxHeight: 250, minHeight: 250),
+              child: FutureBuilder(
+                  future: getTrending(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                          itemCount: snapshot.data!.chartlist.charts!.length,
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: const Color.fromARGB(
+                                          255, 56, 55, 55)),
+                                  height: 220,
+                                  width: 190,
+                                  margin:
+                                      const EdgeInsets.fromLTRB(15, 5, 5, 0),
+                                  child: Column(children: [
+                                    const Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 20, 0, 0)),
+                                    Image.network(
+                                      snapshot
+                                          .data!.chartlist.charts![index].image
+                                          .toString(),
+                                      height: 130,
+                                    ),
+                                    const Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 10, 0, 0)),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 120,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              18, 0, 7, 0),
+                                          child: Text(
+                                            snapshot.data!.chartlist
+                                                .charts![index].title
+                                                .toString(),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              textStyle:
+                                                  const TextStyle(fontSize: 15),
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            print("sd");
+                                          },
+                                          child: Icon(Icons.play_arrow),
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const CircleBorder(),
+                                            padding: const EdgeInsets.all(8),
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 48, 49, 49),
+                                            foregroundColor: Color.fromARGB(
+                                                255, 87, 248, 122),
+                                          ),
+                                        )
+                                      ],
                                     )
                                   ]),
                                 )
@@ -281,8 +406,8 @@ class _HomeState extends State<Home> {
             child: Text(
               "Playlists for you",
               style: GoogleFonts.poppins(
-                  textStyle:
-                      const TextStyle(fontSize: 25, color: Colors.white)),
+                  textStyle: const TextStyle(
+                      fontSize: 25, color: Color.fromARGB(255, 120, 230, 110))),
             ),
           ),
           ConstrainedBox(
@@ -346,7 +471,7 @@ class _HomeState extends State<Home> {
                     } else {
                       return const Text("loading");
                     }
-                  }))
+                  })),
         ]),
       ),
     );
