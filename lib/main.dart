@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:songify/screens/home.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -35,8 +36,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex = 0;
-  @override
   void initState() {
     super.initState();
 
@@ -51,6 +50,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  @override
+  int selectedIndex = 0;
+  late String cookies;
+
   final audioPlayer = AudioPlayer();
   final pages = [
     Home(
@@ -61,7 +64,6 @@ class _HomePageState extends State<HomePage> {
       audioPlayer: AudioPlayer(),
     ),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

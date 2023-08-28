@@ -6,10 +6,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:http/http.dart' as http;
+import 'package:songify/main.dart';
 import 'package:songify/models/song.dart';
 import 'package:songify/models/recomended.dart';
 import 'package:provider/provider.dart';
 import 'package:songify/provider/audioprovider.dart';
+import 'package:songify/screens/home.dart';
 
 class Player extends StatefulWidget {
   Player(
@@ -44,7 +46,7 @@ class _PlayerState extends State<Player> {
   @override
   initState() {
     super.initState();
-    if (widget.fromWhere == "search") {
+    if (widget.fromWhere == "search" || widget.fromWhere == "playlist") {
       getSong();
       getRecomendedSongs();
     } else {
@@ -173,9 +175,22 @@ class _PlayerState extends State<Player> {
                           children: [
                             Container(
                                 alignment: Alignment.topLeft,
-                                margin: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                                 child: ElevatedButton(
-                                    onPressed: () => {Navigator.pop(context)},
+                                    onPressed: () => {
+                                          if (widget.fromWhere == "playlist")
+                                            {Navigator.pop(context)}
+                                          else
+                                            {
+                                              Navigator.of(context)
+                                                  .pushAndRemoveUntil(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              HomePage()),
+                                                      (Route<dynamic> route) =>
+                                                          false)
+                                            }
+                                        },
                                     style: ElevatedButton.styleFrom(
                                       shape: const CircleBorder(),
                                       padding: const EdgeInsets.all(8),
@@ -190,7 +205,7 @@ class _PlayerState extends State<Player> {
                                       size: 25,
                                     ))),
                             Container(
-                              margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
+                              margin: const EdgeInsets.fromLTRB(0, 50, 0, 50),
                               child: Center(
                                   child: Image.network(
                                 Provider.of<AppStateStore>(context,
@@ -202,11 +217,16 @@ class _PlayerState extends State<Player> {
                                     .artist
                                     .toString()
                                     .replaceAll("50x50", "500x500"),
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) {
+                                  return const Text('😢');
+                                },
                                 height: 300,
                                 scale: 1,
                               )),
                             ),
                             Container(
+                              width: 300,
                               child: Text(
                                 Provider.of<AppStateStore>(context,
                                         listen: false)
@@ -215,9 +235,13 @@ class _PlayerState extends State<Player> {
                                     .currentSource!
                                     .tag!
                                     .title
-                                    .toString(),
+                                    .toString()
+                                    .replaceAll("&amp;", "&")
+                                    .replaceAll("&#039;", "'")
+                                    .replaceAll("&quot;", "\""),
+                                textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                         fontSize: 20,
                                         color: Colors.white,
                                         decoration: TextDecoration.none)),
@@ -248,7 +272,7 @@ class _PlayerState extends State<Player> {
                             Obx(
                               () => Container(
                                 margin: const EdgeInsets.all(5),
-                                width: 70,
+                                width: 50,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(35),
@@ -282,7 +306,7 @@ class _PlayerState extends State<Player> {
                             ),
                           ],
                         )
-                      : Center(
+                      : const Center(
                           child: Text(
                             "Loading",
                             style: TextStyle(color: Colors.white),
@@ -299,7 +323,8 @@ class _PlayerState extends State<Player> {
                 ),
               ),
               ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 400),
+                  constraints:
+                      const BoxConstraints(maxHeight: 500, minHeight: 300),
                   child: (reco_loaded == false)
                       ? const Text(
                           "Not",
@@ -310,8 +335,8 @@ class _PlayerState extends State<Player> {
                           padding: EdgeInsets.zero,
                           itemBuilder: (context, index) {
                             return Container(
-                              padding: EdgeInsets.all(7),
-                              margin: const EdgeInsets.all(7),
+                              padding: const EdgeInsets.all(7),
+                              margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   color: const Color.fromARGB(255, 66, 66, 66)),
@@ -335,7 +360,7 @@ class _PlayerState extends State<Player> {
                                           },
                                         ),
                                       ),
-                                      Padding(
+                                      const Padding(
                                           padding:
                                               EdgeInsets.fromLTRB(5, 0, 5, 0)),
                                       Column(
