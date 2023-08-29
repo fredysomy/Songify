@@ -22,7 +22,7 @@ class _SettingsState extends State<Settings> {
   Future<void> loadFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      selectedIndexes = prefs.getStringList('prefs');
+      selectedIndexes = prefs.getStringList('prefs')!;
     });
     print(selectedIndexes);
   }

@@ -64,10 +64,12 @@ class _PlayerState extends State<Player> {
             AudioSource.uri(
                 Uri.parse(song!.data![0].downloadUrl![4].link.toString()),
                 tag: MediaItem(
-                  id: widget.id!,
-                  title: widget.title!,
-                  artist: widget.image!.replaceAll("50x50", "500x500"),
-                )),
+                    id: widget.id!,
+                    title: widget.title!,
+                    artist: widget.image!.replaceAll("50x50", "500x500"),
+                    artUri: Uri.parse(widget.image!
+                        .replaceAll("50x50", "500x500")
+                        .toString()))),
             preload: true);
     await Provider.of<AppStateStore>(context, listen: false).audioPlayer.play();
     listenDuration();

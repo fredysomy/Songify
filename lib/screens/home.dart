@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:songify/helper/playlisthelper.dart';
 import 'package:songify/models/trending.dart';
 import 'package:songify/models/home_wrapper.dart';
 import 'package:provider/provider.dart';
@@ -104,7 +105,7 @@ class _HomeState extends State<Home> {
                 Row(
                   children: [
                     ElevatedButton(
-                      onPressed: () => print("sdd"),
+                      onPressed: () => {checkIfSaved("sdsd")},
                       style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(10),
@@ -343,34 +344,38 @@ class _HomeState extends State<Home> {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => AlbumandPlaylist(
-                                                          type: snapshot
-                                                              .data!
-                                                              .trending
-                                                              .newTrending![
-                                                                  index]
-                                                              .type
-                                                              .toString(),
-                                                          image: snapshot
-                                                              .data!
-                                                              .trending
-                                                              .newTrending![
-                                                                  index]
-                                                              .image
-                                                              .toString(),
-                                                          id: snapshot
-                                                              .data!
-                                                              .trending
-                                                              .newTrending![
-                                                                  index]
-                                                              .id
-                                                              .toString(),
-                                                          title: snapshot
-                                                              .data!
-                                                              .trending
-                                                              .newTrending![index]
-                                                              .title
-                                                              .toString())));
+                                                      builder: (context) =>
+                                                          AlbumandPlaylist(
+                                                            type: snapshot
+                                                                .data!
+                                                                .trending
+                                                                .newTrending![
+                                                                    index]
+                                                                .type
+                                                                .toString(),
+                                                            image: snapshot
+                                                                .data!
+                                                                .trending
+                                                                .newTrending![
+                                                                    index]
+                                                                .image
+                                                                .toString(),
+                                                            id: snapshot
+                                                                .data!
+                                                                .trending
+                                                                .newTrending![
+                                                                    index]
+                                                                .id
+                                                                .toString(),
+                                                            title: snapshot
+                                                                .data!
+                                                                .trending
+                                                                .newTrending![
+                                                                    index]
+                                                                .title
+                                                                .toString(),
+                                                            fromwhere: 'dsdsd',
+                                                          )));
                                             } else {
                                               Navigator.push(
                                                   context,
@@ -510,31 +515,35 @@ class _HomeState extends State<Home> {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => AlbumandPlaylist(
-                                                          type: snapshot
-                                                              .data!
-                                                              .chartlist
-                                                              .charts![index]
-                                                              .type
-                                                              .toString(),
-                                                          image: snapshot
-                                                              .data!
-                                                              .chartlist
-                                                              .charts![index]
-                                                              .image
-                                                              .toString(),
-                                                          id: snapshot
-                                                              .data!
-                                                              .chartlist
-                                                              .charts![index]
-                                                              .id
-                                                              .toString(),
-                                                          title: snapshot
-                                                              .data!
-                                                              .chartlist
-                                                              .charts![index]
-                                                              .title
-                                                              .toString())));
+                                                      builder: (context) =>
+                                                          AlbumandPlaylist(
+                                                            type: snapshot
+                                                                .data!
+                                                                .chartlist
+                                                                .charts![index]
+                                                                .type
+                                                                .toString(),
+                                                            image: snapshot
+                                                                .data!
+                                                                .chartlist
+                                                                .charts![index]
+                                                                .image
+                                                                .toString(),
+                                                            id: snapshot
+                                                                .data!
+                                                                .chartlist
+                                                                .charts![index]
+                                                                .id
+                                                                .toString(),
+                                                            title: snapshot
+                                                                .data!
+                                                                .chartlist
+                                                                .charts![index]
+                                                                .title
+                                                                .toString(),
+                                                            fromwhere:
+                                                                'sdasdasd',
+                                                          )));
                                             } else {
                                               Navigator.push(
                                                   context,
@@ -682,30 +691,39 @@ class _HomeState extends State<Home> {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => AlbumandPlaylist(
-                                                          type: snapshot
-                                                              .data!
-                                                              .playlists
-                                                              .topPlaylists![
-                                                                  index]
-                                                              .type
-                                                              .toString(),
-                                                          image: snapshot
-                                                              .data!
-                                                              .playlists
-                                                              .topPlaylists![
-                                                                  index]
-                                                              .image
-                                                              .toString(),
-                                                          id: snapshot.data!.playlists.topPlaylists![index].id
-                                                              .toString(),
-                                                          title: snapshot
-                                                              .data!
-                                                              .playlists
-                                                              .topPlaylists![
-                                                                  index]
-                                                              .title
-                                                              .toString())));
+                                                      builder: (context) =>
+                                                          AlbumandPlaylist(
+                                                            type: snapshot
+                                                                .data!
+                                                                .playlists
+                                                                .topPlaylists![
+                                                                    index]
+                                                                .type
+                                                                .toString(),
+                                                            image: snapshot
+                                                                .data!
+                                                                .playlists
+                                                                .topPlaylists![
+                                                                    index]
+                                                                .image
+                                                                .toString(),
+                                                            id: snapshot
+                                                                .data!
+                                                                .playlists
+                                                                .topPlaylists![
+                                                                    index]
+                                                                .id
+                                                                .toString(),
+                                                            title: snapshot
+                                                                .data!
+                                                                .playlists
+                                                                .topPlaylists![
+                                                                    index]
+                                                                .title
+                                                                .toString(),
+                                                            fromwhere:
+                                                                'sdasdas',
+                                                          )));
                                             } else {
                                               Navigator.push(
                                                   context,

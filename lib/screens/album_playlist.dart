@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:songify/models/playlistadd.dart';
 import 'package:songify/screens/player.dart';
 
 import '../main.dart';
 import 'package:songify/models/albumdetails.dart';
 import 'package:songify/models/playlistdetails.dart';
+
+import 'package:songify/helper/playlisthelper.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -16,26 +20,32 @@ class AlbumandPlaylist extends StatefulWidget {
       required this.type,
       required this.image,
       required this.id,
-      required this.title});
+      required this.title,
+      required this.fromwhere});
 
   final String type;
   final String image;
   final String id;
   final String title;
+  final String fromwhere;
   @override
   _AlbumandPlaylistState createState() => _AlbumandPlaylistState();
 }
 
 class _AlbumandPlaylistState extends State<AlbumandPlaylist> {
   bool loaded = false;
+  var saveds = false.obs;
   PlaylistDetails? playlistdetails;
   AlbumDetails? albumdetails;
   void initState() {
     super.initState();
+
     if (widget.type == 'album') {
       getAlbumDetails();
+      checkSaved();
     } else {
       getPlaylistDetails();
+      checkSaved();
     }
   }
 
@@ -73,6 +83,23 @@ class _AlbumandPlaylistState extends State<AlbumandPlaylist> {
     }
   }
 
+  Future checkSaved() async {
+    checkIfSaved(widget.id).then((value) => {
+          if (value == true)
+            {
+              setState(() {
+                saveds.value = true;
+              })
+            }
+          else
+            {
+              setState(() {
+                saveds.value = false;
+              })
+            }
+        });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 24, 23, 23),
@@ -85,10 +112,15 @@ class _AlbumandPlaylistState extends State<AlbumandPlaylist> {
                 margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                 child: ElevatedButton(
                     onPressed: () => {
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()),
-                              (Route<dynamic> route) => false)
+                          if (widget.fromwhere == "playlists")
+                            {Navigator.pop(context)}
+                          else
+                            {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage()),
+                                  (Route<dynamic> route) => false)
+                            }
                         },
                     style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
@@ -106,7 +138,7 @@ class _AlbumandPlaylistState extends State<AlbumandPlaylist> {
               child: Center(
                   child: Image.network(
                 widget.image.toString(),
-                height: 200,
+                height: 150,
                 scale: 1,
               )),
             ),
@@ -129,6 +161,36 @@ class _AlbumandPlaylistState extends State<AlbumandPlaylist> {
                 style: GoogleFonts.poppins(
                     textStyle: TextStyle(fontSize: 20, color: Colors.white)),
               ),
+            ),
+            Obx(
+              () => Container(
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: ElevatedButton(
+                      onPressed: () => {
+                            saveds.value == false
+                                ? saveToPlaylist(PlaylistAdd(
+                                        type: widget.type,
+                                        title: widget.title,
+                                        image: widget.image,
+                                        id: widget.id))
+                                    .then((e) => {saveds.value = true})
+                                : removeSaved(widget.id)
+                                    .then((value) => saveds.value = false)
+                          },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(8),
+                        backgroundColor: const Color.fromARGB(255, 48, 49, 49),
+                        foregroundColor:
+                            const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                      child: Icon(
+                        saveds.value == true
+                            ? Icons.playlist_remove
+                            : Icons.playlist_add,
+                        color: Colors.white,
+                        size: 25,
+                      ))),
             ),
             Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
             ConstrainedBox(
