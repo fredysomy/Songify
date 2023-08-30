@@ -1,6 +1,6 @@
 # Songify - Music Streaming and Discovery App
 
-[![3bfb05d8c86e99dea265d5f2adb4a35f.png](https://imgtr.ee/images/2023/08/30/3bfb05d8c86e99dea265d5f2adb4a35f.png)](https://imgtr.ee/image/AUc9s)
+[![04f81c153e932281e9f271f9fc72d37f.png](https://imgtr.ee/images/2023/08/30/04f81c153e932281e9f271f9fc72d37f.png)](https://imgtr.ee/image/Ai7Wx)
 
 Songify is a versatile Flutter app designed for music enthusiasts who love to explore, play, and discover new tunes. With seamless integration of the Jio Saavn service API, Songify lets you dive into a world of music, offering features that enhance your music streaming experience. Whether you're into popular hits or prefer to discover songs in your preferred language, Songify has got you covered.
 
