@@ -46,7 +46,8 @@ Songify is a versatile Flutter app designed for music enthusiasts who love to ex
 
 ## Screenshots
 
-_Insert some stunning screenshots of your app here, showcasing its beautiful interface and key features._
+![a031a33e912f6d6d5d3cf5d8e0f337c1.jpeg](https://imgtr.ee/images/2023/08/30/a031a33e912f6d6d5d3cf5d8e0f337c1.jpeg)
+![bd79b5e602341513332973b555bcf626.jpeg](https://imgtr.ee/images/2023/08/30/bd79b5e602341513332973b555bcf626.jpeg)
 
 ## Feedback and Contributions
 
