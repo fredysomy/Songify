@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:songify/helper/playlisthelper.dart';
 import 'package:songify/screens/album_playlist.dart';
+import 'package:songify/screens/likedsongs.dart';
 
 class Playlists extends StatefulWidget {
   @override
@@ -174,6 +175,72 @@ class _PlaylistsState extends State<Playlists> {
                         const TextStyle(fontSize: 20, color: Colors.white)),
               ),
             ),
+            Container(
+              padding: const EdgeInsets.all(7),
+              margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: const Color.fromARGB(255, 66, 66, 66)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          'https://i.scdn.co/image/ab67706c0000da8470d229cb865e8d81cdce0889',
+                          height: 40,
+                          scale: 1,
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                            return const Text('😢');
+                          },
+                        ),
+                      ),
+                      const Padding(padding: EdgeInsets.fromLTRB(5, 0, 5, 0)),
+                      Column(
+                        children: [
+                          Container(
+                            width: 210,
+                            child: Text("Liked Songs",
+                                maxLines: 1,
+                                style: GoogleFonts.poppins(
+                                    textStyle: const TextStyle(
+                                        fontSize: 20,
+                                        overflow: TextOverflow.ellipsis,
+                                        color: Colors.white))),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Container(
+                    width: 70,
+                    child: ElevatedButton(
+                      onPressed: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LikedSongs()))
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(10),
+                        backgroundColor: const Color.fromARGB(255, 48, 49, 49),
+                        foregroundColor:
+                            const Color.fromARGB(255, 255, 255, 255),
+                      ),
+                      child: const Icon(
+                        Icons.play_arrow_rounded,
+                        color: Colors.white,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

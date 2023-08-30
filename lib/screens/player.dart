@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:http/http.dart' as http;
+import 'package:songify/helper/like_songs_helper.dart';
 import 'package:songify/main.dart';
+import 'package:songify/models/likesongs.dart';
 import 'package:songify/models/song.dart';
 import 'package:songify/models/recomended.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +39,7 @@ class _PlayerState extends State<Player> {
   bool loaded = false;
   bool reco_loaded = false;
   Song? song;
+  var saved = false.obs;
   RecomendedSongs? recomended;
   var duration = ''.obs;
   var position = ''.obs;
@@ -46,6 +49,7 @@ class _PlayerState extends State<Player> {
   @override
   initState() {
     super.initState();
+    checkLiked(widget.id!);
     if (widget.fromWhere == "search" || widget.fromWhere == "playlist") {
       getSong();
       getRecomendedSongs();
@@ -57,6 +61,15 @@ class _PlayerState extends State<Player> {
   }
 
   @override
+  Future checkLiked(String id) async {
+    checkIfLiked(id).then((value) => {
+          if (value == true)
+            {setState(() => saved.value = true)}
+          else
+            {setState(() => saved.value = false)}
+        });
+  }
+
   Future<void> startSong() async {
     await Provider.of<AppStateStore>(context, listen: false)
         .audioPlayer
@@ -272,38 +285,75 @@ class _PlayerState extends State<Player> {
                               ),
                             ),
                             Obx(
-                              () => Container(
-                                margin: const EdgeInsets.all(5),
-                                width: 50,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(35),
-                                  color: Colors.white,
-                                ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    if (isPlaying.value == true) {
-                                      Provider.of<AppStateStore>(context,
-                                              listen: false)
-                                          .audioPlayer
-                                          .pause();
-                                      isPlaying.value = false;
-                                    } else {
-                                      Provider.of<AppStateStore>(context,
-                                              listen: false)
-                                          .audioPlayer
-                                          .play();
-                                      isPlaying.value = true;
-                                    }
-                                  },
-                                  icon: Icon(
-                                    isPlaying.value == true
-                                        ? Icons.pause
-                                        : Icons.play_arrow,
-                                    color: Colors.blueGrey.shade900,
-                                    size: 34,
+                              () => Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.all(5),
+                                    width: 50,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(35),
+                                      color: Colors.white,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        if (isPlaying.value == true) {
+                                          Provider.of<AppStateStore>(context,
+                                                  listen: false)
+                                              .audioPlayer
+                                              .pause();
+                                          isPlaying.value = false;
+                                        } else {
+                                          Provider.of<AppStateStore>(context,
+                                                  listen: false)
+                                              .audioPlayer
+                                              .play();
+                                          isPlaying.value = true;
+                                        }
+                                      },
+                                      icon: Icon(
+                                        isPlaying.value == true
+                                            ? Icons.pause
+                                            : Icons.play_arrow,
+                                        color: Colors.blueGrey.shade900,
+                                        size: 34,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Container(
+                                    margin: const EdgeInsets.all(5),
+                                    width: 50,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(35),
+                                      color: Colors.white,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        saved.value == false
+                                            ? likeThisSong(LikeSongs(
+                                                    url: widget.url,
+                                                    title: widget.title,
+                                                    image: widget.image,
+                                                    id: widget.id))
+                                                .then((value) =>
+                                                    {saved.value = true})
+                                            : removeSaved(widget.id!).then(
+                                                (value) =>
+                                                    {saved.value = false});
+                                      },
+                                      icon: Icon(
+                                        saved.value == true
+                                            ? Icons.thumb_up_alt
+                                            : Icons.thumb_up_alt_outlined,
+                                        color: const Color.fromARGB(
+                                            255, 78, 179, 230),
+                                        size: 34,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

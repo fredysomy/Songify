@@ -6,6 +6,7 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:songify/models/likesongs.dart';
 import 'package:songify/screens/home.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:just_audio/just_audio.dart';
@@ -22,7 +23,9 @@ Future<void> main() async {
     androidNotificationOngoing: true,
   );
   await Hive.initFlutter();
-  Hive.registerAdapter(PlaylistAddAdapter());
+  Hive
+    ..registerAdapter(PlaylistAddAdapter())
+    ..registerAdapter(LikeSongsAdapter());
   runApp(MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => AppStateStore())],
       child: MyApp()));
@@ -69,6 +72,7 @@ class _HomePageState extends State<HomePage> {
       audioPlayer: AudioPlayer(),
     ),
     Searchpage(audio: AudioPlayer()),
+    Playlists(),
     Playlists()
   ];
   @override
@@ -115,6 +119,10 @@ class _HomePageState extends State<HomePage> {
                     icon: Icons.playlist_play_outlined,
                     text: 'Playlists',
                   ),
+                  GButton(
+                    icon: Icons.download_for_offline_outlined,
+                    text: "Downloaded",
+                  )
                 ],
                 selectedIndex: selectedIndex,
                 onTabChange: (index) {
